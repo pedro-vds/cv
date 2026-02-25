@@ -146,7 +146,7 @@
                 </a>
 
                 {/* --- TOP BAR (STICKY) --- */}
-                <nav className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+                <nav className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm no-print">
                     <div className="max-w-5xl mx-auto px-6 py-3 flex flex-col sm:flex-row justify-between items-center gap-3">
                         <div className="flex items-center space-x-3 w-full sm:w-auto justify-center sm:justify-start">
                             <div className={`p-2 rounded-lg transition-colors duration-300 ${mode === 'strategic' ? 'bg-slate-800 text-white' : 'bg-blue-600 text-white'}`}>
@@ -182,7 +182,7 @@
                     {/* 1. Header Info (With Photo) */}
                     <div>
                         {/* PHOTO SECTION */}
-                        <div className="mb-6 relative group w-32 h-32 no-print">
+                        <div className="mb-6 relative group w-32 h-32">
                             <img 
                                 src="89b92ba1-4287-4f14-aa74-4e1600f21106.PNG" 
                                 alt="Profile" 
@@ -625,3 +625,4 @@
     </script>
 </body>
 </html>
+
