@@ -175,8 +175,8 @@
                 </nav>
 
                 <main className="max-w-5xl mx-auto px-6 py-8 md:py-12 grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12">
-                    
-                    {/* --- LEFT COLUMN (SIDEBAR) --- */}
+
+                                        {/* --- LEFT COLUMN TOP (SIDEBAR) --- */}
                     <aside className="md:col-span-4 space-y-8">
                     
                     {/* 1. Header Info (With Photo) */}
@@ -244,146 +244,11 @@
                             <a href="#experience" className={navLinkClass}>
                                 <span>Experience</span> <Icons.ArrowDown />
                             </a>
+                            <a href="#certifications" className={navLinkClass}>
+                                <span>Skills</span> <Icons.ArrowDown />
+                            </a>
                         </div>
                     </div>
-
-                    {/* 4. Certifications */}
-                    <div id="certifications">
-                        <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-200 pb-2 mb-2">Certifications</h3>
-                        <div className="space-y-2">
-                            <div>
-                            <div className="font-bold text-sm"><HT t="GenAI Level I & II" /></div>
-                            <div className="text-xs text-slate-500"><HT t="Devoteam | 2025" /></div>
-                            </div>
-                            <div>
-                            <div className="font-bold text-sm"><HT t="Cognitive Proj. Management in AI" /></div>
-                            <div className="text-xs text-slate-500"><HT t="PMO Institute | 2025" /></div>
-                            </div>
-                            <div>
-                            <div className="font-bold text-sm"><HT t="Software Dev. Technical Delivery" /></div>
-                            <div className="text-xs text-slate-500"><HT t="Atlassian | 2025" /></div>
-                            </div>
-                            <div>
-                            <div className="font-bold text-sm"><HT t="Financial Markets" /></div>
-                            <div className="text-xs text-slate-500"><HT t="Yale University | 2019" /></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* 5. Education */}
-                    <div id="education">
-                        <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-200 pb-2 mb-2">Education</h3>
-                        <div className="space-y-2">
-                            <div>
-                            <div className="font-bold text-sm"><HT t="MBA" /> <span className="font-normal text-xs"><HT t="(Summa Cum Laude)" /></span></div>
-                            <div className="text-xs text-slate-500"><HT t="HEC Paris | 2017 - 2019" /></div>
-                            </div>
-                            <div>
-                            <div className="font-bold text-sm"><HT t="LL.B Law" /></div>
-                            <div className="text-xs text-slate-500"><HT t="Univ. Lusíada | 2010 - 2015" /></div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {/* 6. Languages */}
-                    <div id="languages">
-                        <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-200 pb-2 mb-2">Languages</h3>
-                        <div className="space-y-2">
-                            <div>
-                            <div className="font-bold text-sm"><HT t="English" /> <span className="font-normal text-xs"><HT t="(C2)" /></span></div>
-                            <div className="font-bold text-sm"><HT t="Portuguese" /> <span className="font-normal text-xs"><HT t="(C2)" /></span></div>
-                            <div className="font-bold text-sm"><HT t="Spanish" /> <span className="font-normal text-xs"><HT t="(B2)" /></span></div>
-                            <div className="font-bold text-sm"><HT t="French" /> <span className="font-normal text-xs"><HT t="(B1)" /></span></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* 7. Core Competencies / Stack */}
-                    <div id="competencies">
-                        <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-200 pb-2 mb-2">
-                        {mode === 'strategic' ? 'Core Competencies' : 'Tech Stack'}
-                        </h3>
-                        
-                        {mode === 'strategic' ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-6 animate-fade-in">
-                            <div>
-                                <div className="font-bold text-slate-800 mb-2 flex items-center gap-2"><Icons.Briefcase /> Management</div>
-                                <ul className="text-xs text-slate-600 space-y-1">
-                                    <li><HT t="Strategic & Op. Consultancy" /></li>
-                                    <li><HT t="Transf. & Change Management" /></li>
-                                    <li><HT t="Team Leadership" /></li>
-                                </ul>
-                            </div>
-                            <div>
-                                <div className="font-bold text-slate-800 mb-2 flex items-center gap-2"><Icons.Layers /> Functional</div>
-                                <ul className="text-xs text-slate-600 space-y-1">
-                                    <li><HT t="Automation Development" /></li>
-                                    <li><HT t="Process Modeling" /></li>
-                                    <li><HT t="Data Analysis & Modelling" /></li>
-                                    <li><HT t="Product Ownership" /></li>
-                                    <li><HT t="Project Management" /></li>
-                                    <li><HT t="Transformation Change" /></li>
-                                </ul>
-                            </div>
-                            <div>
-                                <div className="font-bold text-slate-800 mb-2 flex items-center gap-2"><Icons.Settings /> Methodologies & Tools</div>
-                                <ul className="text-xs text-slate-600 space-y-1">
-                                    <li><HT t="Waterfall" /></li>
-                                    <li><HT t="Agile" /></li>
-                                    <hr className="border-slate-200 my-1.5" />
-                                    <li><HT t="Atlassian Tools" /></li>
-                                    <li><HT t="ServiceNow" /></li>
-                                    <li><HT t="Outsystems" /></li>
-                                    <li><HT t="MySQL" /></li>
-                                    <li><HT t="Scriptrunner" /></li>
-                                    <li><HT t="SAP Tools" /></li>
-                                    <li><HT t="MS Dynamics Tool" /></li>
-                                    <li><HT t="MS Office Tools" /></li>
-                                    <li><HT t="MS Power Platform Tools" /></li>
-                                    <hr className="border-slate-200 my-1.5" />                                    
-                                    <li><HT t="Groovy" /></li>
-                                    <li><HT t="JSON" /></li>
-                                    <li><HT t="EXPR" /></li>
-                                    <li><HT t="SQL" /></li>
-                                    <li><HT t="HTML" /></li>
-                                    <li><HT t="Python" /></li>
-                                </ul>
-                            </div>
-                        </div>
-                        ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-6 animate-fade-in">
-                            <div>
-                                <div className="font-bold text-blue-800 mb-2 flex items-center gap-2"><Icons.Settings /> Methodologies & Tools</div>
-                                <ul className="text-sm text-slate-600 space-y-1">
-                                    <li><HT t="Waterfall" /></li>
-                                    <li><HT t="Agile" /></li>
-                                    <hr className="border-slate-200 my-1.5" />
-                                    <li><HT t="Atlassian Tools" /></li>
-                                    <li><HT t="ServiceNow" /></li>
-                                    <li><HT t="Outsystems" /></li>
-                                    <li><HT t="MySQL" /></li>
-                                    <li><HT t="Scriptrunner" /></li>
-                                    <li><HT t="SAP Tools" /></li>
-                                    <li><HT t="MS Dynamics Tool" /></li>
-                                    <li><HT t="MS Office Tools" /></li>
-                                    <li><HT t="MS Power Platform Tools" /></li>
-                                </ul>
-                            </div>
-                            <div>
-                                <div className="font-bold text-blue-800 mb-2 flex items-center gap-2"><Icons.Code /> Dev. Languages</div>
-                                <ul className="text-sm text-slate-600 space-y-1">
-                                    <li><HT t="Groovy" /></li>
-                                    <li><HT t="JSON" /></li>
-                                    <li><HT t="EXPR" /></li>
-                                    <li><HT t="SQL" /></li>
-                                    <li><HT t="HTML" /></li>
-                                    <li><HT t="Python" /></li>
-                                </ul>
-                            </div>
-                        </div>
-                        )}
-                    </div>
-
                     </aside>
 
                     {/* --- RIGHT COLUMN (MAIN CONTENT) --- */}
@@ -604,6 +469,148 @@
                         </div>
                     </div>
 
+                    {/* --- LEFT COLUMN BUTTOM (SIDEBAR) --- */}
+                    <aside className="md:col-span-4 space-y-8">
+
+                    {/* 4. Certifications */}
+                    <div id="certifications">
+                        <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-200 pb-2 mb-2">Certifications</h3>
+                        <div className="space-y-2">
+                            <div>
+                            <div className="font-bold text-sm"><HT t="GenAI Level I & II" /></div>
+                            <div className="text-xs text-slate-500"><HT t="Devoteam | 2025" /></div>
+                            </div>
+                            <div>
+                            <div className="font-bold text-sm"><HT t="Cognitive Proj. Management in AI" /></div>
+                            <div className="text-xs text-slate-500"><HT t="PMO Institute | 2025" /></div>
+                            </div>
+                            <div>
+                            <div className="font-bold text-sm"><HT t="Software Dev. Technical Delivery" /></div>
+                            <div className="text-xs text-slate-500"><HT t="Atlassian | 2025" /></div>
+                            </div>
+                            <div>
+                            <div className="font-bold text-sm"><HT t="Financial Markets" /></div>
+                            <div className="text-xs text-slate-500"><HT t="Yale University | 2019" /></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 5. Education */}
+                    <div id="education">
+                        <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-200 pb-2 mb-2">Education</h3>
+                        <div className="space-y-2">
+                            <div>
+                            <div className="font-bold text-sm"><HT t="MBA" /> <span className="font-normal text-xs"><HT t="(Summa Cum Laude)" /></span></div>
+                            <div className="text-xs text-slate-500"><HT t="HEC Paris | 2017 - 2019" /></div>
+                            </div>
+                            <div>
+                            <div className="font-bold text-sm"><HT t="LL.B Law" /></div>
+                            <div className="text-xs text-slate-500"><HT t="Univ. Lusíada | 2010 - 2015" /></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {/* 6. Languages */}
+                    <div id="languages">
+                        <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-200 pb-2 mb-2">Languages</h3>
+                        <div className="space-y-2">
+                            <div>
+                            <div className="font-bold text-sm"><HT t="English" /> <span className="font-normal text-xs"><HT t="(C2)" /></span></div>
+                            <div className="font-bold text-sm"><HT t="Portuguese" /> <span className="font-normal text-xs"><HT t="(C2)" /></span></div>
+                            <div className="font-bold text-sm"><HT t="Spanish" /> <span className="font-normal text-xs"><HT t="(B2)" /></span></div>
+                            <div className="font-bold text-sm"><HT t="French" /> <span className="font-normal text-xs"><HT t="(B1)" /></span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 7. Core Competencies / Stack */}
+                    <div id="competencies">
+                        <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-200 pb-2 mb-2">
+                        {mode === 'strategic' ? 'Core Competencies' : 'Tech Stack'}
+                        </h3>
+                        
+                        {mode === 'strategic' ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-6 animate-fade-in">
+                            <div>
+                                <div className="font-bold text-slate-800 mb-2 flex items-center gap-2"><Icons.Briefcase /> Management</div>
+                                <ul className="text-xs text-slate-600 space-y-1">
+                                    <li><HT t="Strategic & Op. Consultancy" /></li>
+                                    <li><HT t="Transf. & Change Management" /></li>
+                                    <li><HT t="Team Leadership" /></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <div className="font-bold text-slate-800 mb-2 flex items-center gap-2"><Icons.Layers /> Functional</div>
+                                <ul className="text-xs text-slate-600 space-y-1">
+                                    <li><HT t="Automation Development" /></li>
+                                    <li><HT t="Process Modeling" /></li>
+                                    <li><HT t="Data Analysis & Modelling" /></li>
+                                    <li><HT t="Product Ownership" /></li>
+                                    <li><HT t="Project Management" /></li>
+                                    <li><HT t="Transformation Change" /></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <div className="font-bold text-slate-800 mb-2 flex items-center gap-2"><Icons.Settings /> Methodologies & Tools</div>
+                                <ul className="text-xs text-slate-600 space-y-1">
+                                    <li><HT t="Waterfall" /></li>
+                                    <li><HT t="Agile" /></li>
+                                    <hr className="border-slate-200 my-1.5" />
+                                    <li><HT t="Atlassian Tools" /></li>
+                                    <li><HT t="ServiceNow" /></li>
+                                    <li><HT t="Outsystems" /></li>
+                                    <li><HT t="MySQL" /></li>
+                                    <li><HT t="Scriptrunner" /></li>
+                                    <li><HT t="SAP Tools" /></li>
+                                    <li><HT t="MS Dynamics Tool" /></li>
+                                    <li><HT t="MS Office Tools" /></li>
+                                    <li><HT t="MS Power Platform Tools" /></li>
+                                    <hr className="border-slate-200 my-1.5" />                                    
+                                    <li><HT t="Groovy" /></li>
+                                    <li><HT t="JSON" /></li>
+                                    <li><HT t="EXPR" /></li>
+                                    <li><HT t="SQL" /></li>
+                                    <li><HT t="HTML" /></li>
+                                    <li><HT t="Python" /></li>
+                                </ul>
+                            </div>
+                        </div>
+                        ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-6 animate-fade-in">
+                            <div>
+                                <div className="font-bold text-blue-800 mb-2 flex items-center gap-2"><Icons.Settings /> Methodologies & Tools</div>
+                                <ul className="text-sm text-slate-600 space-y-1">
+                                    <li><HT t="Waterfall" /></li>
+                                    <li><HT t="Agile" /></li>
+                                    <hr className="border-slate-200 my-1.5" />
+                                    <li><HT t="Atlassian Tools" /></li>
+                                    <li><HT t="ServiceNow" /></li>
+                                    <li><HT t="Outsystems" /></li>
+                                    <li><HT t="MySQL" /></li>
+                                    <li><HT t="Scriptrunner" /></li>
+                                    <li><HT t="SAP Tools" /></li>
+                                    <li><HT t="MS Dynamics Tool" /></li>
+                                    <li><HT t="MS Office Tools" /></li>
+                                    <li><HT t="MS Power Platform Tools" /></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <div className="font-bold text-blue-800 mb-2 flex items-center gap-2"><Icons.Code /> Dev. Languages</div>
+                                <ul className="text-sm text-slate-600 space-y-1">
+                                    <li><HT t="Groovy" /></li>
+                                    <li><HT t="JSON" /></li>
+                                    <li><HT t="EXPR" /></li>
+                                    <li><HT t="SQL" /></li>
+                                    <li><HT t="HTML" /></li>
+                                    <li><HT t="Python" /></li>
+                                </ul>
+                            </div>
+                        </div>
+                        )}
+                    </div>
+
+                    </aside>
+
                     </section>
                 </main>
 
@@ -625,4 +632,3 @@
     </script>
 </body>
 </html>
-
