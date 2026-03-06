@@ -3,8 +3,8 @@ name: Deploy Multi-Branch to GitHub Pages
 on:
   push:
     branches:
-      - main
-      - main_v2
+      - cv_v1
+      - cv_v2
 
 permissions:
   contents: write
