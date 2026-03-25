@@ -9,12 +9,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- React -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js" integrity="sha384-65ePV2W/zI1QF6pYdnGjEhKGCMmR0L5NfYb6t8qlOSbGe8+hm6m6cEgPOFZ3sp8" crossorigin="anonymous"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" integrity="sha384-Isr9HMQcdO4z/DOqMBLsGhJbGFESAATAkOj7E43LOumb4FNzKPXnBQo3IkAMmDKi" crossorigin="anonymous"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 
     <!-- Babel for JSX in-browser -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
+    <!-- html2canvas + jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
         @page { size: A4; margin: 10mm; }
@@ -63,15 +66,12 @@
 
         const HighlightText = ({ text, highlight }) => {
             if (!highlight || !highlight.trim()) return <>{text}</>;
-            const escaped = highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            const regex = new RegExp(`(${escaped})`, 'gi');
+            const regex = new RegExp(`(${highlight})`, 'gi');
             const parts = text.split(regex);
             return (
                 <>
                     {parts.map((part, i) =>
-                        part.toLowerCase() === highlight.toLowerCase()
-                            ? <mark key={i} className="bg-yellow-300 text-slate-900 rounded-sm px-0.5">{part}</mark>
-                            : part
+                        regex.test(part) ? <mark key={i} className="bg-yellow-300 text-slate-900 rounded-sm px-0.5">{part}</mark> : part
                     )}
                 </>
             );
@@ -85,8 +85,45 @@
             const navLinkClass = "flex items-center justify-between p-2 rounded-md bg-white border border-slate-200 shadow-sm hover:shadow-md hover:border-blue-300 transition-all text-sm font-medium text-slate-600 hover:text-blue-700 cursor-pointer group";
             const HT = ({ t }) => <HighlightText text={t} highlight={searchTerm} />;
 
-            const generatePDF = () => {
-                window.print();
+            const generatePDF = async () => {
+                try {
+                    const node = document.querySelector('main');
+                    const canvas = await html2canvas(node, { scale: 2, useCORS: true });
+                    const imgData = canvas.toDataURL('image/png');
+
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+
+                    const pageWidth = 210;
+                    const pageHeight = 297;
+                    const margin = 10;
+                    const pdfWidth = pageWidth - margin * 2;
+                    const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+
+                    let heightLeft = imgHeight;
+                    let position = margin;
+
+                    pdf.addImage(imgData, 'PNG', margin, position, pdfWidth, imgHeight);
+                    heightLeft -= (pageHeight - margin * 2);
+
+                    while (heightLeft > 0) {
+                        pdf.addPage();
+                        pdf.addImage(
+                            imgData,
+                            'PNG',
+                            margin,
+                            position - (imgHeight - heightLeft),
+                            pdfWidth,
+                            imgHeight
+                        );
+                        heightLeft -= (pageHeight - margin * 2);
+                    }
+
+                    pdf.save('Pedro_Vieira_da_Silva_CV.pdf');
+                } catch (e) {
+                    console.error(e);
+                    alert('Failed to generate PDF');
+                }
             };
 
             return (
@@ -122,13 +159,12 @@
                                     className="inline-flex items-center gap-2 bg-blue-600 text-white px-3 py-2 rounded-full hover:bg-blue-700 transition no-print"
                                     title="Download / Save as PDF"
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                                     <span className="text-sm font-medium">Download</span>
                                 </button>
 
                                 <button
                                     onClick={toggleMode}
-                                    aria-label={`Switch to ${mode === 'strategic' ? 'technical' : 'strategic'} view`}
                                     className="flex items-center justify-center space-x-3 bg-slate-100 hover:bg-slate-200 transition-colors px-4 py-2 rounded-full border border-slate-300 group cursor-pointer w-full sm:w-auto"
                                 >
                                     <span className={`text-sm font-medium ${mode === 'strategic' ? 'text-slate-900' : 'text-slate-400'}`}>Strategy</span>
@@ -146,13 +182,16 @@
                             <div className="space-y-8">
                                 {/* 1. Header Info (With Photo) */}
                                 <div>
-                                    <div className="mb-6 w-32 h-32">
+                                    <div className="mb-6 relative group w-32 h-32">
                                         <img
                                             src="profile_picture.PNG"
                                             alt="Profile"
                                             className={`w-full h-full rounded-full object-cover border-4 shadow-lg transition-colors duration-300 ${mode === 'strategic' ? 'border-slate-300' : 'border-blue-200'}`}
                                             onError={(e) => { e.target.onerror = null; e.target.src = 'https://ui-avatars.com/api/?name=Pedro+Vieira+da+Silva&background=0f172a&color=fff&size=256'; }}
                                         />
+                                        <div className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                                            <span className="text-white text-xs font-bold text-center px-2">Update<br/>Photo</span>
+                                        </div>
                                     </div>
 
                                     <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight mb-2">Pedro<br/>Vieira da Silva</h1>
@@ -171,9 +210,7 @@
                                 {/* 2. SEARCH SECTION */}
                                 <div className="no-print">
                                     <div className="relative">
-                                        <label htmlFor="cv-search" className="sr-only">Search keywords in CV</label>
                                         <input
-                                            id="cv-search"
                                             type="text"
                                             placeholder="search keyword"
                                             value={searchTerm}
@@ -373,7 +410,7 @@
                                         <div className={`text-sm font-semibold mb-1 transition-colors duration-300 ${mode === 'strategic' ? 'text-slate-600' : 'text-blue-700'}`}>
                                             {mode === 'strategic' ? <HT t="Digital Transformation Lead" /> : <HT t="Senior Technical Product Manager (Tools)" />}
                                         </div>
-                                        <div className="mb-3 bg-white p-2 rounded-lg border border-slate-200 shadow-sm hover:border-blue-500 transition-all">
+                                        <div className="mb-4 bg-white p-2 rounded-lg border border-slate-200 shadow-sm hover:border-blue-500 transition-all">
                                             <span className="text-xs text-slate-600 font-medium">
                                                 <HT t="Spearheading strategic digital transformation initiatives at Tier-1 International Banks. Responsible for full-cycle product ownership, delivery governance, and leading cross-functional squads to drive enterprise-wide system modernizations that directly impact bottom-line efficiency." />
                                             </span>
@@ -398,98 +435,98 @@
                                     </div>
 
                                     {/* JOB 2 */}
-                                    <div className="group">
-                                        <div className="flex flex-col sm:flex-row justify-between items-baseline mb-0">
-                                            <h3 className="text-xl font-bold text-slate-900"><HT t="Deloitte" /></h3>
-                                            <span className="text-sm text-slate-500 font-mono">Jan 2021 – Sep 2022</span>
-                                        </div>
-                                        <div className={`text-sm font-semibold mb-1 transition-colors duration-300 ${mode === 'strategic' ? 'text-slate-600' : 'text-blue-700'}`}>
-                                            {mode === 'strategic' ? <HT t="Senior Transformation Manager" /> : <HT t="Systems Integrator & Technical PMO" />}
-                                        </div>
-                                        <div className="mb-3 bg-white p-2 rounded-lg border border-slate-200 shadow-sm hover:border-blue-500 transition-all">
-                                            <span className="text-xs text-slate-600 font-medium">
-                                                <HT t="Led high-visibility digital transformation projects for Fortune 500 clients across Finance, Aviation, and Oil & Gas sectors, orchestrating the development, implementation, and user adoption of complex ERP ecosystems." />
-                                            </span>
-                                        </div>
-                                        <div className="space-y-0 text-slate-700 text-xs leading-relaxed">
-                                            {mode === 'strategic' ? (
-                                                <ul className="list-disc pl-5 space-y-1 marker:text-slate-400">
-                                                    <li><strong><HT t="Digital Transformation:" /></strong> <HT t="Spearheaded the integration of SAP S/4HANA with modern SaaS platforms across Finance and Legal sectors, managing project budgets exceeding $15M." /></li>
-                                                    <li><strong><HT t="Strategy Consultancy:" /></strong> <HT t="Advised C-suite stakeholders on digital maturity, defining strategic roadmaps that aligned tech investments with business goals, resulting in a 30% increase in operational efficiency." /></li>
-                                                    <li><strong><HT t="Process Optimization:" /></strong> <HT t="Delivered end-to-end transformation projects ahead of schedule, improving data accuracy and reducing client reporting times by 45%." /></li>
-                                                    <li><strong><HT t="Team Leadership:" /></strong> <HT t="Directed a PMO team of 8 and managed 4 development squads, establishing rigorous agile governance and standardizing enterprise rollout planning." /></li>
-                                                </ul>
-                                            ) : (
-                                                <ul className="list-disc pl-5 space-y-2 marker:text-blue-500">
-                                                    <li><strong><HT t="ERP API Integration:" /></strong> <HT t="Oversaw the technical integration APIs between" /> <strong><HT t="SAP S/4HANA" /></strong><HT t="," /> <strong><HT t="MS Navision" /></strong><HT t=", and" /> <strong><HT t="SAP Concur" /></strong><HT t=", streamlining automated expense management for 10,000+ employees." /></li>
-                                                    <li><strong><HT t="ServiceNow Architecture:" /></strong> <HT t="Coordinated the technical deployment and custom workflows of ServiceNow modules, fully automating Legal and Procurement intake systems." /></li>
-                                                    <li><strong><HT t="SaaS Deployment:" /></strong> <HT t="Managed the enterprise rollout of DocuSign APIs, cutting contract lifecycle execution time from 14 days to 4 hours." /></li>
-                                                </ul>
-                                            )}
-                                        </div>
+                                     <div className="group">
+                                    <div className="flex flex-col sm:flex-row justify-between items-baseline mb-0">
+                                        <h3 className="text-xl font-bold text-slate-900"><HT t="Deloitte" /></h3>
+                                        <span className="text-sm text-slate-500 font-mono">Jan 2021 – Sep 2022</span>
+                                    </div>
+                                    <div className={`text-sm font-semibold mb-1 transition-colors duration-300 ${mode === 'strategic' ? 'text-slate-600' : 'text-blue-700'}`}>
+                                        {mode === 'strategic' ? <HT t="Senior Transformation Manager" /> : <HT t="Systems Integrator & Technical PMO" />}
+                                    </div>
+                                    <div className="mb-3 bg-white p-2 rounded-lg border border-slate-200 shadow-sm hover:border-blue-500 transition-all">
+                                        <span className="text-xs text-slate-600 font-medium">
+                                            <HT t="Led high-visibility digital transformation projects for Fortune 500 clients across Finance, Aviation, and Oil & Gas sectors, orchestrating the development, implementation, and user adoption of complex ERP ecosystems." />
+                                        </span>
+                                    </div>
+                                    <div className="space-y-0 text-slate-700 text-xs leading-relaxed">
+                                        {mode === 'strategic' ? (
+                                        <ul className="list-disc pl-5 space-y-1 marker:text-slate-400">
+                                            <li><strong><HT t="Digital Transformation:" /></strong> <HT t="Spearheaded the integration of SAP S/4HANA with modern SaaS platforms across Finance and Legal sectors, managing project budgets exceeding $15M." /></li>
+                                            <li><strong><HT t="Strategy Consultancy:" /></strong> <HT t="Advised C-suite stakeholders on digital maturity, defining strategic roadmaps that aligned tech investments with business goals, resulting in a 30% increase in operational efficiency." /></li>
+                                            <li><strong><HT t="Process Optimization:" /></strong> <HT t="Delivered end-to-end transformation projects ahead of schedule, improving data accuracy and reducing client reporting times by 45%." /></li>
+                                            <li><strong><HT t="Team Leadership:" /></strong> <HT t="Directed a PMO team of 8 and managed 4 development squads, establishing rigorous agile governance and standardizing enterprise rollout planning." /></li>
+                                        </ul>
+                                        ) : (
+                                        <ul className="list-disc pl-5 space-y-2 marker:text-blue-500">
+                                            <li><strong><HT t="ERP API Integration:" /></strong> <HT t="Oversaw the technical integration APIs between" /> <strong><HT t="SAP S/4HANA" /></strong><HT t="," /> <strong><HT t="MS Navision" /></strong><HT t=", and" /> <strong><HT t="SAP Concur" /></strong><HT t=", streamlining automated expense management for 10,000+ employees." /></li>
+                                            <li><strong><HT t="ServiceNow Architecture:" /></strong> <HT t="Coordinated the technical deployment and custom workflows of ServiceNow modules, fully automating Legal and Procurement intake systems." /></li>
+                                            <li><strong><HT t="SaaS Deployment:" /></strong> <HT t="Managed the enterprise rollout of DocuSign APIs, cutting contract lifecycle execution time from 14 days to 4 hours." /></li>
+                                        </ul>
+                                        )}
+                                    </div>
                                     </div>
 
-                                    {/* JOB 3 */}
+                                     {/* JOB 3 */}
                                     <div className="group">
-                                        <div className="flex flex-col sm:flex-row justify-between items-baseline mb-0">
-                                            <h3 className="text-xl font-bold text-slate-900"><HT t="LCTT Legal" /></h3>
-                                            <span className="text-sm text-slate-500 font-mono">Jan 2020 – Present</span>
-                                        </div>
-                                        <div className={`text-sm font-semibold mb-1 transition-colors duration-300 ${mode === 'strategic' ? 'text-slate-600' : 'text-blue-700'}`}>
-                                            {mode === 'strategic' ? <HT t="Co-Founder & Head of Strategy" /> : <HT t="Head of IT Infrastructure & Cloud" />}
-                                        </div>
-                                        <div className="mb-3 bg-white p-2 rounded-lg border border-slate-200 shadow-sm hover:border-blue-500 transition-all">
-                                            <span className="text-xs text-slate-600 font-medium">
-                                                <HT t="Designed, built, and deployed the company's foundational digital strategy and IT architecture from the ground up, establishing a resilient, cloud-first ecosystem." />
-                                            </span>
-                                        </div>
-                                        <div className="space-y-0 text-slate-700 text-xs leading-relaxed">
-                                            {mode === 'strategic' ? (
-                                                <ul className="list-disc pl-5 space-y-1 marker:text-slate-400">
-                                                    <li><strong><HT t="Digital Strategy:" /></strong> <HT t="Defined and executed the IT architecture from inception, establishing a highly scalable, cloud-first infrastructure that supported 500+ concurrent clients." /></li>
-                                                    <li><strong><HT t="Business Continuity:" /></strong> <HT t="Directed business continuity operations and remote work frameworks, achieving 99.99% uptime and ensuring strict regulatory compliance for legal data handling." /></li>
-                                                    <li><strong><HT t="Vendor Optimization:" /></strong> <HT t="Negotiated and managed SaaS and Infrastructure vendor relationships, optimizing annual IT procurement and licensing costs by 35%." /></li>
-                                                </ul>
-                                            ) : (
-                                                <ul className="list-disc pl-5 space-y-2 marker:text-blue-500">
-                                                    <li><strong><HT t="Architecture Design:" /></strong> <HT t="Designed and implemented the entire" /> <strong><HT t="ERP ecosystems architecture" /></strong> <HT t="and API integrations." /></li>
-                                                    <li><strong><HT t="Cloud Security:" /></strong> <HT t="Deployed and configured" /> <strong><HT t="Cloudflare" /></strong> <HT t="for enterprise DNS/Security and" /> <strong><HT t="Multicert" /></strong> <HT t="for secure e-signatures, achieving zero security breaches." /></li>
-                                                    <li><strong><HT t="Low-Code Data Pipelines:" /></strong> <HT t="Engineered automated data pipelines integrating" /> <strong><HT t="Primavera ERP" /></strong> <HT t="with internal tools using" /> <strong><HT t="Zapier and N8N" /></strong> <HT t="webhooks, saving 40+ hours of manual entry weekly." /></li>
-                                                    <li><strong><HT t="Web Ops & Admin:" /></strong> <HT t="Managed global domain security policies, Google Workspace architecture, and CMS deployment for the firm's digital storefront." /></li>
-                                                </ul>
-                                            )}
-                                        </div>
+                                    <div className="flex flex-col sm:flex-row justify-between items-baseline mb-0">
+                                        <h3 className="text-xl font-bold text-slate-900"><HT t="LCTT Legal" /></h3>
+                                        <span className="text-sm text-slate-500 font-mono">Jan 2020 – Present</span>
+                                    </div>
+                                    <div className={`text-sm font-semibold mb-1 transition-colors duration-300 ${mode === 'strategic' ? 'text-slate-600' : 'text-blue-700'}`}>
+                                        {mode === 'strategic' ? <HT t="Co-Founder & Head of Strategy" /> : <HT t="Head of IT Infrastructure & Cloud" />}
+                                    </div>
+                                    <div className="mb-3 bg-white p-2 rounded-lg border border-slate-200 shadow-sm hover:border-blue-500 transition-all">
+                                        <span className="text-xs text-slate-600 font-medium">
+                                            <HT t="Designed, built, and deployed the company's foundational digital strategy and IT architecture from the ground up, establishing a resilient, cloud-first ecosystem." />
+                                        </span>
+                                    </div>
+                                    <div className="space-y-0 text-slate-700 text-xs leading-relaxed">
+                                        {mode === 'strategic' ? (
+                                        <ul className="list-disc pl-5 space-y-0 marker:text-slate-400">
+                                            <li><strong><HT t="Digital Strategy:" /></strong> <HT t="Defined and executed the IT architecture from inception, establishing a highly scalable, cloud-first infrastructure that supported 500+ concurrent clients." /></li>
+                                            <li><strong><HT t="Business Continuity:" /></strong> <HT t="Directed business continuity operations and remote work frameworks, achieving 99.99% uptime and ensuring strict regulatory compliance for legal data handling." /></li>
+                                            <li><strong><HT t="Vendor Optimization:" /></strong> <HT t="Negotiated and managed SaaS and Infrastructure vendor relationships, optimizing annual IT procurement and licensing costs by 35%." /></li>
+                                        </ul>
+                                        ) : (
+                                        <ul className="list-disc pl-5 space-y-2 marker:text-blue-500">
+                                            <li><strong><HT t="Architecture Design:" /></strong> <HT t="Designed and implemented the entire" /> <strong><HT t="ERP ecosystems architecture" /></strong> <HT t="and API integrations." /></li>
+                                            <li><strong><HT t="Cloud Security:" /></strong> <HT t="Deployed and configured" /> <strong><HT t="Cloudflare" /></strong> <HT t="for enterprise DNS/Security and" /> <strong><HT t="Multicert" /></strong> <HT t="for secure e-signatures, achieving zero security breaches." /></li>
+                                            <li><strong><HT t="Low-Code Data Pipelines:" /></strong> <HT t="Engineered automated data pipelines integrating" /> <strong><HT t="Primavera ERP" /></strong> <HT t="with internal tools using" /> <strong><HT t="Zapier and N8N" /></strong> <HT t="webhooks, saving 40+ hours of manual entry weekly." /></li>
+                                            <li><strong><HT t="Web Ops & Admin:" /></strong> <HT t="Managed global domain security policies, Google Workspace architecture, and CMS deployment for the firm's digital storefront." /></li>
+                                        </ul>
+                                        )}
+                                    </div>
                                     </div>
 
                                     {/* JOB 4 - NPN */}
                                     <div className="group">
-                                        <div className="flex flex-col sm:flex-row justify-between items-baseline mb-0">
-                                            <h3 className="text-xl font-bold text-slate-900"><HT t="NPN" /></h3>
-                                            <span className="text-sm text-slate-500 font-mono">2015 – 2019</span>
-                                        </div>
-                                        <div className={`text-sm font-semibold mb-1 transition-colors duration-300 ${mode === 'strategic' ? 'text-slate-600' : 'text-blue-700'}`}>
-                                            {mode === 'strategic' ? <HT t="Strategic Consultant" /> : <HT t="Process Automation Specialist" />}
-                                        </div>
-                                        <div className="mb-3 bg-white p-2 rounded-lg border border-slate-200 shadow-sm hover:border-blue-500 transition-all">
-                                            <span className="text-xs text-slate-600 font-medium">
-                                                <HT t="Spearheaded the strategic restructuring for Wealth Management and Investment Funds, redefining the corporate roadmap to ensure alignment between operational development and long-term business goals." />
-                                            </span>
-                                        </div>
-                                        <div className="space-y-0 text-slate-700 text-xs leading-relaxed">
-                                            {mode === 'strategic' ? (
-                                                <ul className="list-disc pl-5 space-y-1 marker:text-slate-400">
-                                                    <li><strong><HT t="Strategic Consulting:" /></strong> <HT t="Advised the C-suite of 2 major Wealth Management firms on organizational restructuring, driving long-term value creation and operational alignment." /></li>
-                                                    <li><strong><HT t="Asset Management:" /></strong> <HT t="Managed operational continuity and technical scaling for 3 Investment Funds representing €2.7B in corporate and real estate assets." /></li>
-                                                    <li><strong><HT t="Negotiation:" /></strong> <HT t="Managed to close a €9M budget with an 87% savings rate." /></li>
-                                                </ul>
-                                            ) : (
-                                                <ul className="list-disc pl-5 space-y-1 marker:text-blue-500">
-                                                    <li><strong><HT t="Excel Scripting:" /></strong> <HT t="Developed complex" /> <strong><HT t="VBA macros" /></strong> <HT t="to automate letter expedition and CSV data labeling, increasing data processing speed by 80%." /></li>
-                                                    <li><strong><HT t="Network Architecture:" /></strong> <HT t="Deployed and maintained a secure" /> <strong><HT t="Mesh Network" /></strong> <HT t="to ensure encrypted internal document sharing across 5 corporate departments." /></li>
-                                                    <li><strong><HT t="Database Engineering:" /></strong> <HT t="Architected custom Filemaker databases to digitize and maintain audit-ready financial record keeping." /></li>
-                                                </ul>
-                                            )}
-                                        </div>
+                                    <div className="flex flex-col sm:flex-row justify-between items-baseline mb-0">
+                                        <h3 className="text-xl font-bold text-slate-900"><HT t="NPN" /></h3>
+                                        <span className="text-sm text-slate-500 font-mono">2015 – 2019</span>
+                                    </div>
+                                    <div className={`text-sm font-semibold mb-1 transition-colors duration-300 ${mode === 'strategic' ? 'text-slate-600' : 'text-blue-700'}`}>
+                                        {mode === 'strategic' ? <HT t="Strategic Consultant" /> : <HT t="Process Automation Specialist" />}
+                                    </div>
+                                    <div className="mb-3 bg-white p-2 rounded-lg border border-slate-200 shadow-sm hover:border-blue-500 transition-all">
+                                        <span className="text-xs text-slate-600 font-medium">
+                                            <HT t="Spearheaded the strategic restructuring for Wealth Management and Investment Funds, redefining the corporate roadmap to ensure alignment between operational development and long-term business goals." />
+                                        </span>
+                                    </div>
+                                    <div className="space-y-0 text-slate-700 text-xs leading-relaxed">
+                                        {mode === 'strategic' ? (
+                                        <ul className="list-disc pl-5 space-y-1 marker:text-slate-400">
+                                            <li><strong><HT t="Strategic Consulting:" /></strong> <HT t="Advised the C-suite of 2 major Wealth Management firms on organizational restructuring, driving long-term value creation and operational alignment." /></li>
+                                            <li><strong><HT t="Asset Management:" /></strong> <HT t="Managed operational continuity and technical scaling for 3 Investment Funds representing €2.7B in corporate and real estate assets." /></li>
+                                            <li><strong><HT t="Negotiation:" /></strong> <HT t="Managed to close a €9M budget with an 87% savings rate." /></li>
+                                        </ul>
+                                        ) : (
+                                        <ul className="list-disc pl-5 space-y-1 marker:text-blue-500">
+                                            <li><strong><HT t="Excel Scripting:" /></strong> <HT t="Developed complex" /> <strong><HT t="VBA macros" /></strong> <HT t="to automate letter expedition and CSV data labeling, increasing data processing speed by 80%." /></li>
+                                            <li><strong><HT t="Network Architecture:" /></strong> <HT t="Deployed and maintained a secure" /> <strong><HT t="Mesh Network" /></strong> <HT t="to ensure encrypted internal document sharing across 5 corporate departments." /></li>
+                                            <li><strong><HT t="Database Engineering:" /></strong> <HT t="Architected custom Filemaker databases to digitize and maintain audit-ready financial record keeping." /></li>
+                                        </ul>
+                                        )}
+                                    </div>
                                     </div>
                                 </div>
                             </div>
@@ -513,4 +550,3 @@
     </script>
 </body>
 </html>
-
