@@ -23,6 +23,14 @@
 | Linear | SAG-89 (rule), SAG-94 (rollout), SAG-82 (legacy clones) |
 | Last reviewed | 2026-11-23 |
 
+### Tool connections
+Every tool this project uses, with the same facts as the "Projects using it" table in that tool's note (`Personal/Tech/Integrations/`). Update both together.
+
+| Tool | Role | Resource / ID | Link | Path or branch | How connected | Env var names | Status | Since |
+|---|---|---|---|---|---|---|---|---|
+| GitHub | Source code and hosting | `pedro-vds/cv`; GitHub Pages | https://github.com/pedro-vds/cv , https://pedro-vds.github.io/cv/ | `main`, folder `/` (legacy build); local `~/Documents/Claude/Projects/cv/` | Pages publishes on push | none | Connected | 2026-04 |
+| GitHub (old copy) | Superseded repo | `pedro-vds/cv_old` | https://github.com/pedro-vds/cv_old | branch `cv_v1`; local `~/Documents/GitHub/cv_old` | none | none | Repo archived 2026-11-23 | 2026-03 |
+
 ## Diagrams
 
 ### Architecture
@@ -63,6 +71,7 @@ Live: https://pedro-vds.github.io/cv/. Or open `index.html` in a browser. No bui
 - 2026-11-23: GitHub Pages source confirmed with `gh api repos/pedro-vds/cv/pages`: branch `main`, folder `/`, legacy build, status built (SAG-105).
 - 2026-11-23: docs/README.md mirror created (SAG-105).
 - 2026-11-23: legacy repo `pedro-vds/cv_old` archived on GitHub (reversible with `gh repo unarchive`); local clone untouched (SAG-82).
+- 2026-11-23: added the Tool connections table (SAG-117).
 
 ## Documentation index
 
