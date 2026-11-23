@@ -62,6 +62,7 @@ Live: https://pedro-vds.github.io/cv/. Or open `index.html` in a browser. No bui
 - 2026-11-23: note created from the project template; mirror `docs/README.md` to be created by Claude Code (SAG-94).
 - 2026-11-23: GitHub Pages source confirmed with `gh api repos/pedro-vds/cv/pages`: branch `main`, folder `/`, legacy build, status built (SAG-105).
 - 2026-11-23: docs/README.md mirror created (SAG-105).
+- 2026-11-23: legacy repo `pedro-vds/cv_old` archived on GitHub (reversible with `gh repo unarchive`); local clone untouched (SAG-82).
 
 ## Documentation index
 
